@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contractor Estimate Form - Baystate Home Remodeling</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #8B4513;
+            --secondary-color: #D2691E;
+            --background-color: #DEB887;
+            --text-color: #4B3621;
+            --input-background: #F4A460;
+            --input-text-color: #4B3621;
+            --input-border-color: #8B4513;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+            padding: 20px;
+            font-size: 16px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h1, h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-color);
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--input-border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: var(--input-background);
+            color: var(--input-text-color);
+        }
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: var(--primary-color);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--input-border-color);
+        }
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .input-group input {
+            width: 45%;
+        }
+        #invoice {
+            background-color: white;
+            padding: 30px;
+            border: 1px solid var(--input-border-color);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Deck Repair Estimate Form</h1>
+        <form id="estimateForm">
+            <div class="input-group">
+                <label for="clientName">Client Name:</label>
+                <input type="text" id="clientName" name="clientName" placeholder="Enter client name">
+            </div>
+            <div class="input-group">
+                <label for="deckBoards">Replace Deck Boards (sq ft):</label>
+                <input type="number" id="deckBoards" name="deckBoards" value="0" min="0">
+                <input type="number" id="deckBoardsRate" name="deckBoardsRate" value="37" min="0" step="0.01" placeholder="Price per sq ft">
+            </div>
+            <div class="input-group">
+                <label for="railing">Replace Railing (linear ft):</label>
+                <input type="number" id="railing" name="railing" value="0" min="0">
+                <input type="number" id="railingRate" name="railingRate" value="45" min="0" step="0.01" placeholder="Price per linear ft">
+            </div>
+            <div class="input-group">
+                <label for="staircase">Rebuild Staircase:</label>
+                <input type="number" id="staircase" name="staircase" value="0" min="0">
+                <input type="number" id="staircaseRate" name="staircaseRate" value="1200" min="0" step="0.01" placeholder="Price per staircase">
+            </div>
+            <div class="input-group">
+                <label for="powerWash">Power Wash Deck (sq ft):</label>
+                <input type="number" id="powerWash" name="powerWash" value="0" min="0">
+                <input type="number" id="powerWashRate" name="powerWashRate" value="0.80" min="0" step="0.01" placeholder="Price per sq ft">
+            </div>
+            <div class="input-group">
+                <label for="sealant">Apply Sealant (sq ft):</label>
+                <input type="number" id="sealant" name="sealant" value="0" min="0">
+                <input type="number" id="sealantRate" name="sealantRate" value="1.50" min="0" step="0.01" placeholder="Price per sq ft">
+            </div>
+            <div class="input-group">
+                <label for="hourlyRate">Labor Rate (per hour):</label>
+                <input type="number" id="hourlyRate" name="hourlyRate" value="75" min="0" step="0.01">
+            </div>
+            <div class="input-group">
+                <label for="hours">Estimated Labor Hours:</label>
+                <input type="number" id="hours" name="hours" value="0" min="0" step="0.5">
+            </div>
+            <button type="button" onclick="calculateEstimate()">Calculate Estimate</button>
+        </form>
+        <div id="result"></div>
+        <div id="invoice"></div>
+    </div>
+    <script>
+        function calculateEstimate() {
+            const fields = ['deckBoards', 'railing', 'staircase', 'powerWash', 'sealant'];
+            let totalMaterialCost = 0;
+            let totalLaborCost = 0;
+            let breakdown = [];
+
+            fields.forEach(field => {
+                const quantity = parseFloat(document.getElementById(field).value) || 0;
+                const rate = parseFloat(document.getElementById(field + 'Rate').value) || 0;
+                const cost = quantity * rate;
+                totalMaterialCost += cost;
+                breakdown.push({ field, quantity, rate, cost });
+            });
+
+            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 0;
+            const hours = parseFloat(document.getElementById('hours').value) || 0;
+            const laborCost = hourlyRate * hours;
+            totalLaborCost = laborCost;
+
+            const totalEstimate = totalMaterialCost + totalLaborCost;
+
+            displayEstimate(breakdown, hours, hourlyRate, laborCost, totalMaterialCost, totalLaborCost, totalEstimate);
+            createInvoice(breakdown, hours, hourlyRate, laborCost, totalMaterialCost, totalLaborCost, totalEstimate);
+        }
+
+        function displayEstimate(breakdown, hours, hourlyRate, laborCost, totalMaterialCost, totalLaborCost, totalEstimate) {
+            let breakdownHtml = breakdown.map(item => `
+                <tr>
+                    <td>${item.field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</td>
+                    <td>${item.quantity}</td>
+                    <td>$${item.rate.toFixed(2)}</td>
+                    <td>$${item.cost.toFixed(2)}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('result').innerHTML = `
+                <h2>Estimate Summary</h2>
+                <table>
+                    <tr><th>Description</th><th>Quantity</th><th>Rate</th><th>Cost</th></tr>
+                    ${breakdownHtml}
+                    <tr>
+                        <td>Labor</td>
+                        <td>${hours} hours</td>
+                        <td>$${hourlyRate.toFixed(2)}/hour</td>
+                        <td>$${laborCost.toFixed(2)}</td>
+                    </tr>
+                    <tr class="total">
+                        <td colspan="3">Total Material Cost:</td>
+                        <td>$${totalMaterialCost.toFixed(2)}</td>
+                    </tr>
+                    <tr class="total">
+                        <td colspan="3">Total Labor Cost:</td>
+                        <td>$${totalLaborCost.toFixed(2)}</td>
+                    </tr>
+                    <tr class="total">
+                        <td colspan="3">Total Estimate:</td>
+                        <td>$${totalEstimate.toFixed(2)}</td>
+                    </tr>
+                </table>
+            `;
+        }
+
+        function createInvoice(breakdown, hours, hourlyRate, laborCost, totalMaterialCost, totalLaborCost, totalEstimate) {
+            let clientName = document.getElementById('clientName').value || 'Client';
+            let date = new Date().toLocaleDateString();
+            let invoiceNumber = 'INV-' + Date.now();
+
+            let breakdownHtml = breakdown.map(item => `
+                <tr>
+                    <td>${item.field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</td>
+                    <td>${item.quantity}</td>
+                    <td>$${item.rate.toFixed(2)}</td>
+                    <td>$${item.cost.toFixed(2)}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('invoice').innerHTML = `
+                <div class="invoice-header">
+                    <h2>Baystate Home Remodeling</h2>
+                    <p>123 Main Street, Boston, MA 02108</p>
+                    <p>Phone: (555) 123-4567 | Email: info@baystateremodeling.com</p>
+                </div>
+                <div class="invoice-details">
+                    <div>
+                        <strong>Bill To:</strong><br>
+                        ${clientName}<br>
+                        123 Client Street<br>
+                        Boston, MA 02108
+                    </div>
+                    <div>
+                        <strong>Invoice Number:</strong> ${invoiceNumber}<br>
+                        <strong>Date:</strong> ${date}<br>
+                        <strong>Due Date:</strong> ${new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString()}
+                    </div>
+                </div>
+                <table>
+                    <tr><th>Description</th><th>Quantity</th><th>Rate</th><th>Amount</th></tr>
+                    ${breakdownHtml}
+                    <tr>
+                        <td>Labor</td>
+                        <td>${hours} hours</td>
+                        <td>$${hourlyRate.toFixed(2)}/hour</td>
+                        <td>$${laborCost.toFixed(2)}</td>
+                    </tr>
+                    <tr class="total">
+                        <td colspan="3">Total Material Cost:</td>
+                        <td>$${totalMaterialCost.toFixed(2)}</td>
+                    </tr>
+                    <tr class="total">
+                        <td colspan="3">Total Labor Cost:</td>
+                        <td>$${totalLaborCost.toFixed(2)}</td>
+                    </tr>
+                    <tr class="total">
+                        <td colspan="3"><strong>Total Due:</strong></td>
+                        <td><strong>$${totalEstimate.toFixed(2)}</strong></td>
+                    </tr>
+                </table>
+                <p>Payment is due within 30 days. Thank you for your business!</p>
+            `;
+        }
+
+        // Add event listeners to form inputs for real-time updates
+        document.querySelectorAll('#estimateForm input').forEach(input => {
+            input.addEventListener('input', calculateEstimate);
+        });
+
+        // Initial calculation
+        calculateEstimate();
+    </script>
+</body>
+</html>
